@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,7 +120,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="logout.jsp">
+                <a class="nav-link" href="logout">
                     <i class="fas fa-sign-out-alt"></i>
                 </a>
             </li>
@@ -129,7 +131,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark elevation-4">
         <!-- Brand Logo -->
-        <a href="adminDashboard.jsp" class="brand-link text-center">
+        <a href="adminDashboard" class="brand-link text-center">
                 <span class="brand-text font-weight-light">
                     <i class="fas fa-graduation-cap"></i>
                     Admin Portal
@@ -144,7 +146,7 @@
                     <img src="./assets/images/admin-avatar.jpg" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">Administrator</a>
+                    <a href="#" class="d-block"><%= session.getAttribute("adminUsername") %></a>
                 </div>
             </div>
 
@@ -152,31 +154,31 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                     <li class="nav-item">
-                        <a href="#" class="nav-link active" onclick="loadDashboard()">
+                        <a href="adminDashboard" class="nav-link active">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="loadExamManagement()">
+                        <a href="examManagement" class="nav-link">
                             <i class="nav-icon fas fa-file-alt"></i>
                             <p>Exam Management</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="loadUserManagement()">
+                        <a href="userManagement" class="nav-link">
                             <i class="nav-icon fas fa-users"></i>
                             <p>User Management</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="loadResultManagement()">
+                        <a href="resultManagement" class="nav-link">
                             <i class="nav-icon fas fa-chart-bar"></i>
                             <p>Results</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="loadSettings()">
+                        <a href="settings" class="nav-link">
                             <i class="nav-icon fas fa-cog"></i>
                             <p>Settings</p>
                         </a>
@@ -215,13 +217,13 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>42</h3>
+                                <h3>${totalExams}</h3>
                                 <p>Total Exams</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-file-alt"></i>
                             </div>
-                            <a href="#" class="small-box-footer" onclick="loadExamManagement()">
+                            <a href="examManagement" class="small-box-footer">
                                 Manage Exams <i class="fas fa-arrow-circle-right"></i>
                             </a>
                         </div>
@@ -230,13 +232,13 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>150</h3>
+                                <h3>${registeredStudents}</h3>
                                 <p>Registered Students</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-user-graduate"></i>
                             </div>
-                            <a href="#" class="small-box-footer" onclick="loadUserManagement()">
+                            <a href="userManagement" class="small-box-footer">
                                 Manage Users <i class="fas fa-arrow-circle-right"></i>
                             </a>
                         </div>
@@ -245,13 +247,13 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3>5</h3>
+                                <h3>${upcomingExams}</h3>
                                 <p>Upcoming Exams</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
-                            <a href="#" class="small-box-footer" onclick="loadExamSchedule()">
+                            <a href="examSchedule" class="small-box-footer">
                                 View Schedule <i class="fas fa-arrow-circle-right"></i>
                             </a>
                         </div>
@@ -260,13 +262,13 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3>28</h3>
+                                <h3>${resultsPublished}</h3>
                                 <p>Results Published</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-chart-pie"></i>
                             </div>
-                            <a href="#" class="small-box-footer" onclick="loadResultManagement()">
+                            <a href="resultManagement" class="small-box-footer">
                                 View Results <i class="fas fa-arrow-circle-right"></i>
                             </a>
                         </div>
@@ -295,39 +297,38 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <% 
+                                    List<Map<String, String>> recentExams = (List<Map<String, String>>) request.getAttribute("recentExams");
+                                    if(recentExams != null) {
+                                        for(Map<String, String> exam : recentExams) {
+                                            String statusClass = exam.get("status").equals("Upcoming") ? "bg-warning" : "bg-success";
+                                    %>
                                     <tr>
-                                        <td>EX001</td>
-                                        <td>Java Programming Fundamentals</td>
-                                        <td>2025-03-15</td>
-                                        <td><span class="badge bg-warning">Upcoming</span></td>
+                                        <td><%= exam.get("id") %></td>
+                                        <td><%= exam.get("title") %></td>
+                                        <td><%= exam.get("date") %></td>
+                                        <td><span class="badge <%= statusClass %>"><%= exam.get("status") %></span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i>
-                                            </button>
+                                            <form action="examAction" method="post" style="display:inline;">
+                                                <input type="hidden" name="examId" value="<%= exam.get("id") %>">
+                                                <input type="hidden" name="action" value="edit">
+                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </form>
+                                            <form action="examAction" method="post" style="display:inline;">
+                                                <input type="hidden" name="examId" value="<%= exam.get("id") %>">
+                                                <input type="hidden" name="action" value="delete">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>EX002</td>
-                                        <td>Database Management Systems</td>
-                                        <td>2025-03-10</td>
-                                        <td><span class="badge bg-success">Completed</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>EX003</td>
-                                        <td>Web Development Basics</td>
-                                        <td>2025-03-20</td>
-                                        <td><span class="badge bg-warning">Upcoming</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    <% 
+                                        }
+                                    } 
+                                    %>
                                     </tbody>
                                 </table>
                             </div>
@@ -344,18 +345,29 @@
                             </div>
                             <div class="card-body">
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-primary mb-3" onclick="showCreateExamModal()">
-                                        <i class="fas fa-plus mr-2"></i> Create New Exam
-                                    </button>
-                                    <button class="btn btn-success mb-3" onclick="showAddUserModal()">
-                                        <i class="fas fa-user-plus mr-2"></i> Add New User
-                                    </button>
-                                    <button class="btn btn-info mb-3" onclick="showPublishResultsModal()">
-                                        <i class="fas fa-chart-line mr-2"></i> Publish Results
-                                    </button>
-                                    <button class="btn btn-secondary">
-                                        <i class="fas fa-cog mr-2"></i> System Settings
-                                    </button>
+                                    <form action="createExam" method="get" class="mb-3">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-plus mr-2"></i> Create New Exam
+                                        </button>
+                                    </form>
+                                    
+                                    <form action="addUser" method="get" class="mb-3">
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="fas fa-user-plus mr-2"></i> Add New User
+                                        </button>
+                                    </form>
+                                    
+                                    <form action="publishResults" method="get" class="mb-3">
+                                        <button type="submit" class="btn btn-info w-100">
+                                            <i class="fas fa-chart-line mr-2"></i> Publish Results
+                                        </button>
+                                    </form>
+                                    
+                                    <form action="systemSettings" method="get">
+                                        <button type="submit" class="btn btn-secondary w-100">
+                                            <i class="fas fa-cog mr-2"></i> System Settings
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -377,39 +389,5 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="./assets/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-
-<!-- Custom Scripts -->
-<script>
-    // Load different sections
-    function loadExamManagement() {
-        // AJAX call to load exam management page
-        $.ajax({
-            url: "examManagement",
-            type: "POST",
-            success: function (response) {
-                $(".content-wrapper").html(response);
-                // Update breadcrumb
-                $(".breadcrumb-item.active").text("Exam Management");
-            },
-            error: function () {
-                alert("Error loading exam management module");
-            }
-        });
-    }
-
-    function loadUserManagement() {
-        // Similar AJAX call for user management
-        console.log("Loading user management...");
-    }
-
-    // Other functions for different sections
-    function showCreateExamModal() {
-        // Show modal for creating new exam
-        console.log("Opening create exam modal...");
-        // Implementation would include modal display logic
-    }
-
-    // Add other functions as needed
-</script>
 </body>
 </html>

@@ -11,7 +11,7 @@
     <div id="particles-js"></div>
     <div class="current-time">
         <i class="fas fa-clock me-2"></i>
-        <span id="current-time">2025-03-14 08:33:10</span>
+        <span id="current-time">2025-03-14 14:33:21</span>
     </div>
 
     <div class="container content-wrapper">
@@ -30,14 +30,21 @@
                     </div>
 
                     <form action="login" method="post" class="animate__animated animate__fadeInUp animate__delay-1s">
+                        <% if (request.getAttribute("error") != null) { %>
+                        <div class="alert alert-danger">
+                            <%= request.getAttribute("error") %>
+                        </div>
+                        <% } %>
+                        
                         <div class="mb-4 input-group-hover">
                             <div class="input-group">
                                 <span class="input-group-text bg-light">
                                     <i class="fas fa-envelope text-primary"></i>
                                 </span>
-                                <input type="email" 
+                                <input type="text" 
+                                       name="username"
                                        class="form-control form-control-lg" 
-                                       placeholder="Email address"
+                                       placeholder="Username"
                                        required>
                             </div>
                         </div>
@@ -48,6 +55,7 @@
                                     <i class="fas fa-lock text-primary"></i>
                                 </span>
                                 <input type="password" 
+                                       name="password"
                                        class="form-control form-control-lg" 
                                        placeholder="Password"
                                        required>
@@ -56,7 +64,7 @@
 
                         <div class="d-flex justify-content-between mb-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember">
+                                <input class="form-check-input" type="checkbox" id="remember" name="remember">
                                 <label class="form-check-label" for="remember">Remember me</label>
                             </div>
                             <a href="#" class="text-primary text-decoration-none hover-effect">
